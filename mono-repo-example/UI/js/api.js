@@ -1,8 +1,8 @@
 // ── API Base URLs ──
 const API = {
-  AUTH:    'http://localhost:8081',
-  CATALOG: 'http://localhost:8082',
-  ORDERS:  'http://localhost:8083',
+  AUTH:    'https://arquitectura2026-2.onrender.com',
+  CATALOG: 'https://arquitectura2026-2-1.onrender.com',
+  ORDERS:  'https://arquitectura2026-2-2.onrender.com',
 };
 
 // ── Token storage ──
