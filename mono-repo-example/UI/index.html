@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tienda Abarrotes</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700&family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg ta-navbar sticky-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand ta-brand" href="#" onclick="showPage('catalog')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6h13M10 19a1 1 0 100 2 1 1 0 000-2zm7 0a1 1 0 100 2 1 1 0 000-2z"/></svg>
+        Tienda Abarrotes
+      </a>
+      <div class="d-flex align-items-center gap-3 ms-auto">
+        <span class="ta-user-badge d-none" id="navUsername"></span>
+        <button class="btn ta-btn-cart position-relative" onclick="showPage('cart')" id="cartBtn" style="display:none!important">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6h13M10 19a1 1 0 100 2 1 1 0 000-2zm7 0a1 1 0 100 2 1 1 0 000-2z"/></svg>
+          <span class="ta-cart-badge d-none" id="cartCount">0</span>
+        </button>
+        <button class="btn ta-btn-logout d-none" id="logoutBtn" onclick="logout()">Salir</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- TOAST -->
+  <div class="ta-toast-container position-fixed top-0 end-0 p-3" style="z-index:9999">
+    <div id="toastEl" class="toast align-items-center border-0" role="alert">
+      <div class="d-flex">
+        <div class="toast-body" id="toastMsg"></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: LOGIN -->
+  <div id="page-login" class="ta-page">
+    <div class="container d-flex justify-content-center align-items-center" style="min-height:90vh">
+      <div class="ta-auth-card">
+        <div class="text-center mb-4">
+          <div class="ta-auth-icon mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+          </div>
+          <h2 class="ta-auth-title">Iniciar sesión</h2>
+          <p class="ta-auth-subtitle">Bienvenido de vuelta</p>
+        </div>
+        <div id="loginError" class="alert alert-danger d-none" role="alert"></div>
+        <form id="loginForm" novalidate>
+          <div class="mb-3">
+            <label for="loginUsername" class="form-label ta-label">Usuario</label>
+            <input type="text" class="form-control ta-input" id="loginUsername" placeholder="Ej: juan" required autocomplete="username" />
+            <div class="invalid-feedback">Ingresa tu usuario.</div>
+          </div>
+          <div class="mb-4">
+            <label for="loginPassword" class="form-label ta-label">Contraseña</label>
+            <div class="input-group">
+              <input type="password" class="form-control ta-input" id="loginPassword" placeholder="••••••••" required autocomplete="current-password" />
+              <button class="btn ta-btn-eye" type="button" onclick="togglePassword('loginPassword', this)" aria-label="Mostrar contraseña">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              </button>
+            </div>
+            <div class="invalid-feedback">Ingresa tu contraseña.</div>
+          </div>
+          <button type="submit" class="btn ta-btn-primary w-100 mb-3" id="loginBtn">
+            <span class="btn-text">Ingresar</span>
+            <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+          </button>
+          <p class="text-center ta-auth-switch">¿No tienes cuenta? <a href="#" onclick="showPage('register')">Regístrate</a></p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: REGISTER -->
+  <div id="page-register" class="ta-page d-none">
+    <div class="container d-flex justify-content-center align-items-center" style="min-height:90vh">
+      <div class="ta-auth-card">
+        <div class="text-center mb-4">
+          <div class="ta-auth-icon mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+          </div>
+          <h2 class="ta-auth-title">Crear cuenta</h2>
+          <p class="ta-auth-subtitle">Únete a la tienda</p>
+        </div>
+        <div id="registerError" class="alert alert-danger d-none" role="alert"></div>
+        <div id="registerSuccess" class="alert alert-success d-none" role="alert"></div>
+        <form id="registerForm" novalidate>
+          <div class="mb-3">
+            <label for="regUsername" class="form-label ta-label">Usuario</label>
+            <input type="text" class="form-control ta-input" id="regUsername" placeholder="Ej: maria123" required minlength="3" autocomplete="username" />
+            <div class="invalid-feedback">Mínimo 3 caracteres.</div>
+          </div>
+          <div class="mb-3">
+            <label for="regEmail" class="form-label ta-label">Correo electrónico</label>
+            <input type="email" class="form-control ta-input" id="regEmail" placeholder="correo@ejemplo.com" required autocomplete="email" />
+            <div class="invalid-feedback">Correo válido requerido.</div>
+          </div>
+          <div class="mb-4">
+            <label for="regPassword" class="form-label ta-label">Contraseña</label>
+            <div class="input-group">
+              <input type="password" class="form-control ta-input" id="regPassword" placeholder="••••••••" required minlength="6" autocomplete="new-password" />
+              <button class="btn ta-btn-eye" type="button" onclick="togglePassword('regPassword', this)" aria-label="Mostrar contraseña">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              </button>
+            </div>
+            <div class="invalid-feedback">Mínimo 6 caracteres.</div>
+          </div>
+          <button type="submit" class="btn ta-btn-primary w-100 mb-3" id="registerBtn">
+            <span class="btn-text">Registrarse</span>
+            <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+          </button>
+          <p class="text-center ta-auth-switch">¿Ya tienes cuenta? <a href="#" onclick="showPage('login')">Inicia sesión</a></p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: CATALOG -->
+  <div id="page-catalog" class="ta-page d-none">
+    <div class="ta-hero">
+      <div class="container">
+        <h1 class="ta-hero-title">Productos frescos<br>para tu hogar</h1>
+        <p class="ta-hero-sub">Encuentra todo lo que necesitas en un solo lugar</p>
+      </div>
+    </div>
+    <div class="container py-4">
+      <!-- Filters -->
+      <div class="ta-filters-bar mb-4">
+        <div class="row g-3 align-items-end">
+          <div class="col-12 col-md-4">
+            <label for="filterName" class="form-label ta-label">Buscar producto</label>
+            <input type="search" class="form-control ta-input" id="filterName" placeholder="Ej: leche, arroz..." />
+          </div>
+          <div class="col-6 col-md-2">
+            <label for="filterCategory" class="form-label ta-label">Categoría</label>
+            <select class="form-select ta-input" id="filterCategory">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div class="col-6 col-md-2">
+            <label for="filterMin" class="form-label ta-label">Precio mín.</label>
+            <input type="number" class="form-control ta-input" id="filterMin" placeholder="0" min="0" />
+          </div>
+          <div class="col-6 col-md-2">
+            <label for="filterMax" class="form-label ta-label">Precio máx.</label>
+            <input type="number" class="form-control ta-input" id="filterMax" placeholder="∞" min="0" />
+          </div>
+          <div class="col-6 col-md-2">
+            <button class="btn ta-btn-primary w-100" onclick="loadProducts()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="me-1"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
+              Buscar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Grid -->
+      <div id="productsLoading" class="text-center py-5 d-none">
+        <div class="spinner-border ta-spinner" role="status"><span class="visually-hidden">Cargando...</span></div>
+        <p class="mt-3 ta-muted">Cargando productos...</p>
+      </div>
+      <div id="productsEmpty" class="ta-empty-state d-none">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <p>No se encontraron productos</p>
+      </div>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="productsGrid"></div>
+    </div>
+  </div>
+
+  <!-- PAGE: CART -->
+  <div id="page-cart" class="ta-page d-none">
+    <div class="container py-5">
+      <div class="d-flex align-items-center gap-3 mb-4">
+        <button class="btn ta-btn-back" onclick="showPage('catalog')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <h2 class="ta-page-title mb-0">Mi Carrito</h2>
+      </div>
+
+      <div id="cartLoading" class="text-center py-5 d-none">
+        <div class="spinner-border ta-spinner" role="status"><span class="visually-hidden">Cargando...</span></div>
+      </div>
+      <div id="cartEmpty" class="ta-empty-state d-none">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6h13M10 19a1 1 0 100 2 1 1 0 000-2zm7 0a1 1 0 100 2 1 1 0 000-2z"/></svg>
+        <p>Tu carrito está vacío</p>
+        <button class="btn ta-btn-primary mt-2" onclick="showPage('catalog')">Ver productos</button>
+      </div>
+
+      <div id="cartContent" class="d-none">
+        <div class="row g-4">
+          <div class="col-lg-8">
+            <div class="ta-cart-list" id="cartItemsList"></div>
+          </div>
+          <div class="col-lg-4">
+            <div class="ta-summary-card">
+              <h5 class="ta-summary-title">Resumen del pedido</h5>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="ta-muted">Subtotal</span>
+                <span id="cartSubtotal" class="fw-600">$0</span>
+              </div>
+              <div class="d-flex justify-content-between mb-3">
+                <span class="ta-muted">Envío</span>
+                <span class="ta-accent fw-600">Gratis</span>
+              </div>
+              <hr class="ta-divider" />
+              <div class="d-flex justify-content-between mb-4">
+                <span class="fw-700 ta-foreground">Total</span>
+                <span id="cartTotal" class="fw-700 ta-total-price">$0</span>
+              </div>
+              <button class="btn ta-btn-accent w-100 mb-2" onclick="confirmOrder()" id="confirmBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="me-1"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                <span class="btn-text">Confirmar Pedido</span>
+                <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+              </button>
+              <button class="btn ta-btn-ghost w-100" onclick="showPage('catalog')">Seguir comprando</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: ORDERS -->
+  <div id="page-orders" class="ta-page d-none">
+    <div class="container py-5">
+      <div class="d-flex align-items-center gap-3 mb-4">
+        <button class="btn ta-btn-back" onclick="showPage('catalog')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <h2 class="ta-page-title mb-0">Mis Pedidos</h2>
+      </div>
+      <div id="ordersLoading" class="text-center py-5 d-none">
+        <div class="spinner-border ta-spinner" role="status"><span class="visually-hidden">Cargando...</span></div>
+      </div>
+      <div id="ordersEmpty" class="ta-empty-state d-none">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        <p>Aún no tienes pedidos</p>
+      </div>
+      <div id="ordersList"></div>
+    </div>
+  </div>
+
+  <!-- PAGE: ORDER SUCCESS -->
+  <div id="page-order-success" class="ta-page d-none">
+    <div class="container d-flex justify-content-center align-items-center" style="min-height:80vh">
+      <div class="ta-success-card text-center">
+        <div class="ta-success-icon mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h2 class="ta-success-title">¡Pedido confirmado!</h2>
+        <p class="ta-success-sub mb-2">Tu pedido fue procesado exitosamente.</p>
+        <p class="ta-order-id mb-4" id="successOrderId"></p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+          <button class="btn ta-btn-primary" onclick="showPage('orders'); loadOrders()">Ver mis pedidos</button>
+          <button class="btn ta-btn-ghost" onclick="showPage('catalog')">Seguir comprando</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
